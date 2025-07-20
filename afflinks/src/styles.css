@@ -1,0 +1,45 @@
+.stars-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #1A1A1A, #2B2B2B);
+  z-index: -1;
+}
+
+.stars-background::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #1A1A1A, #2B2B2B);
+}
+
+.stars-background > div {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #E6D5B8;
+  border-radius: 50%;
+  top: calc(var(--random-top) * 100%);
+  left: calc(var(--random-left) * 100%);
+  animation: twinkle calc(5s + var(--random-twinkle) * 10s) infinite, move calc(8s + var(--random-move) * 8s) linear infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
+}
+
+@keyframes move {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100vh); }
+}
+
+/* Generate random values for stars */
+.stars-background > div:nth-child(1) { --random-top: 0.1; --random-left: 0.2; --random-twinkle: 0.3; --random-move: 0.4; }
+.stars-background > div:nth-child(2) { --random-top: 0.3; --random-left: 0.4; --random-twinkle: 0.5; --random-move: 0.6; }
+.stars-background > div:nth-child(3) { --random-top: 0.5; --random-left: 0.6; --random-twinkle: 0.7; --random-move: 0.8; }
+.stars-background > div:nth-child(4) { --random-top: 0.7; --random-left: 0.8; --random-twinkle: 0.9; --random-move: 0.2; }
+.stars-background > div:nth-child(5) { --random-top: 0.9; --random-left: 0.1; --random-twinkle: 0.4; --random-move: 0.5; }
