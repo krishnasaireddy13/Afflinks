@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+// Import HashRouter
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import getAppTheme from './theme';
 
@@ -16,7 +17,7 @@ import Header from './components/Header';
 import Deals from './components/Deals';
 import Footer from './components/Footer';
 import Home from './components/Home';
-import AffiliateLinks from './components/AffiliateLinks';
+import AffiliateLinks from './components/AffiliateLinks'; // Assuming this component is used elsewhere or will be
 import About from './components/About';
 import Admin from './components/Admin';
 import Categories from './components/Categories';
@@ -46,7 +47,6 @@ const generateUUID = () => {
 };
 
 const App = () => {
-  // Always use light mode (Black & Champagne theme)
   const [firebaseApp, setFirebaseApp] = useState(null);
   const [auth, setAuth] = useState(null);
   const [db, setDb] = useState(null);
@@ -74,7 +74,7 @@ const App = () => {
         console.log('App.jsx: Firebase app initialized:', app.name, 'Project ID:', app.options.projectId);
         const authInstance = getAuth(app);
         const dbInstance = getFirestore(app);
-        const analyticsInstance = getAnalytics(app);
+        const analyticsInstance = getAnalytics(app); // Analytics instance initialized but not used further
 
         setFirebaseApp(app);
         setAuth(authInstance);
@@ -108,13 +108,15 @@ const App = () => {
                   setUserId(user.uid);
                 } catch (retryError) {
                   console.error('App.jsx: Anonymous sign-in retry failed:', retryError.code, retryError.message);
-                  setUserId(generateUUID());
-                  console.log('App.jsx: Fallback userId generated:', userId);
+                  // Fallback to client-generated UUID if Firebase anonymous sign-in fails after retries
+                  const fallbackUserId = generateUUID();
+                  setUserId(fallbackUserId);
+                  console.log('App.jsx: Fallback userId generated:', fallbackUserId);
                 }
               }
             } else {
               console.log('App.jsx: No user logged in for admin page. Allowing Admin component to handle login.');
-              setUserId(null);
+              setUserId(null); // Ensure userId is null for admin if not logged in
             }
           } catch (error) {
             console.error('App.jsx: Auth processing error:', error.code, error.message);
@@ -182,10 +184,12 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter>
+      {/* Changed to HashRouter and removed the basename prop */}
+      <HashRouter>
         <div>
           <Header />
           <Routes>
+            {/* Routes remain the same */}
             <Route
               path="/home"
               element={<Home db={db} firebaseApp={firebaseApp} />}
@@ -198,12 +202,14 @@ const App = () => {
               path="/admin"
               element={<Admin firebaseApp={firebaseApp} auth={auth} db={db} userId={userId} isAuthReady={isAuthReady} />}
             />
+            {/* Redirect from root to /home, this will now be #/home */}
             <Route path="/" element={<Navigate to="/home" replace />} />
+            {/* Catch-all route, this will now be #/home */}
             <Route path="*" element={<Navigate to="/home" replace />} />
           </Routes>
           <Footer />
         </div>
-      </BrowserRouter>
+      </HashRouter>
     </ThemeProvider>
   );
 };
